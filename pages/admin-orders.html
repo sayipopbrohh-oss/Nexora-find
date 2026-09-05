@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Orders — Nexora.Find Admin</title>
+<link rel="stylesheet" href="../css/admin.css">
+<style>
+  /* refresh button spin state */
+  #refresh-btn.spinning svg{animation:admSpin .8s linear infinite}
+</style>
+</head>
+<body class="adm-body">
+
+<header class="adm-topbar">
+  <div class="adm-topbar-inner">
+    <a href="../index.html" class="logo">Nexora<span class="dot"></span>Find</a>
+    <span class="adm-chip">Admin · Orders</span>
+    <div class="adm-top-right">
+      <span class="adm-user" id="adm-user">
+        <span class="adm-avatar">A</span>
+        <span class="uname">admin</span>
+      </span>
+      <button class="adm-icon-btn" id="logout-btn" title="Sign out" aria-label="Sign out">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main class="adm-main">
+  <div class="adm-page-head">
+    <div>
+      <span class="adm-eyebrow">Fulfilment</span>
+      <h1>Orders</h1>
+      <p>Live view of every customer order — new placements appear here instantly.</p>
+    </div>
+    <div class="adm-head-actions">
+      <button class="adm-btn adm-btn-outline adm-btn-sm" id="refresh-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12a9 9 0 1 1-2.6-6.3M21 3v6h-6"/></svg>
+        Refresh
+      </button>
+    </div>
+  </div>
+
+  <section class="adm-stats" id="stats" aria-label="Order statistics"></section>
+
+  <div class="adm-error-banner" id="error-banner" hidden>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v4.5M12 16h.01"/></svg>
+    <span id="error-text"></span>
+    <button class="adm-btn adm-btn-outline adm-btn-sm" id="error-retry">Retry</button>
+  </div>
+
+  <section class="adm-toolbar" aria-label="Search and filter orders">
+    <div class="adm-search" id="search-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.8-3.8"/></svg>
+      <input type="search" id="search-input" placeholder="Search order code, customer, phone, email or city…" autocomplete="off">
+      <button class="adm-search-clear" id="search-clear" aria-label="Clear search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="adm-pills" id="pills" role="tablist" aria-label="Filter by status"></div>
+    <div class="adm-toolbar-right">
+      <span class="adm-result-count" id="result-count"></span>
+    </div>
+  </section>
+
+  <section class="adm-card" aria-label="Orders list">
+    <div class="adm-card-head">
+      <div>
+        <h2>All Orders</h2>
+        <div class="sub">Newest first · click any row for full customer &amp; shipment details</div>
+      </div>
+    </div>
+    <div id="table-wrap"></div>
+    <div class="adm-cards" id="cards-wrap"></div>
+  </section>
+</main>
+
+<div class="adm-overlay" id="overlay" hidden></div>
+<aside class="adm-drawer" id="drawer" role="dialog" aria-modal="true" aria-label="Order details" hidden></aside>
+<div id="toast-root"></div>
+
+<script src="../js/admin.js"></script>
+<script src="../js/admin-orders.js"></script>
+</body>
+</html>

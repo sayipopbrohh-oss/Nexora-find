@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Admin Sign In — Nexora.Find</title>
+<link rel="stylesheet" href="../css/admin.css">
+</head>
+<body class="adm-login-body">
+
+<main class="adm-login-wrap">
+  <a href="../index.html" class="adm-back-link" id="back-link">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    Back to store
+  </a>
+
+  <div class="adm-login-card" id="login-card">
+    <a href="../index.html" class="logo">Nexora<span class="dot"></span>Find</a>
+
+    <span class="adm-eyebrow">Restricted · Admin Area</span>
+    <h1>Admin Sign In</h1>
+    <p class="adm-login-sub">Manage orders, customers and fulfilment for Nexora.Find.</p>
+
+    <div class="adm-alert" id="login-error" hidden>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v4.5M12 16h.01"/></svg>
+      <span id="login-error-text"></span>
+    </div>
+
+    <form id="login-form">
+      <div class="adm-field">
+        <label for="username">Username</label>
+        <div class="adm-input-wrap">
+          <input class="adm-input" type="text" id="username" name="username" placeholder="admin" autocomplete="username" required style="padding-left:43px">
+          <svg class="lead" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="position:absolute;left:15px;width:16px;height:16px;color:var(--gray-300);pointer-events:none"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/></svg>
+        </div>
+      </div>
+
+      <div class="adm-field">
+        <label for="password">Password</label>
+        <div class="adm-input-wrap">
+          <input class="adm-input" type="password" id="password" name="password" placeholder="••••••••••••" autocomplete="current-password" required style="padding-left:43px;padding-right:48px">
+          <svg class="lead" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="position:absolute;left:15px;width:16px;height:16px;color:var(--gray-300);pointer-events:none"><rect x="4.5" y="10" width="15" height="10.5" rx="2.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+          <button type="button" class="adm-pass-toggle" id="pass-toggle" aria-label="Show password">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1.5 12S5.5 5 12 5s10.5 7 10.5 7-4 7-10.5 7S1.5 12 1.5 12z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <button type="submit" class="adm-btn adm-btn-gold adm-btn-block adm-login-btn" id="login-btn">
+        <span id="login-btn-label">Sign In</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="login-btn-arrow"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+    </form>
+
+    <div class="adm-login-foot">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4.5" y="10" width="15" height="10.5" rx="2.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+      Secured session · expires after 12 hours
+    </div>
+  </div>
+</main>
+
+<script src="../js/admin.js"></script>
+<script>
+  (function () {
+    const form = document.getElementById("login-form");
+    const btn = document.getElementById("login-btn");
+    const btnLabel = document.getElementById("login-btn-label");
+    const btnArrow = document.getElementById("login-btn-arrow");
+    const errBox = document.getElementById("login-error");
+    const errText = document.getElementById("login-error-text");
+    const card = document.getElementById("login-card");
+    const passInput = document.getElementById("password");
+    const passToggle = document.getElementById("pass-toggle");
+
+    // Already signed in? Go straight to the dashboard.
+    AdminAPI.session()
+      .then((s) => { if (s && s.authenticated) location.replace("admin-orders.html"); })
+      .catch(() => {});
+
+    // Show / hide password
+    passToggle.addEventListener("click", () => {
+      const show = passInput.type === "password";
+      passInput.type = show ? "text" : "password";
+      passToggle.setAttribute("aria-label", show ? "Hide password" : "Show password");
+      passToggle.innerHTML = show ? NxfIcon.eyeOff : NxfIcon.eye;
+      passInput.focus();
+    });
+
+    function showError(msg) {
+      errText.textContent = msg;
+      errBox.hidden = false;
+      card.classList.remove("adm-shake");
+      void card.offsetWidth; // restart animation
+      card.classList.add("adm-shake");
+    }
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      errBox.hidden = true;
+      btn.disabled = true;
+      btnLabel.textContent = "Signing in";
+      btnArrow.outerHTML = '<span class="adm-spinner" id="login-btn-arrow"></span>';
+
+      try {
+        await AdminAPI.login(
+          document.getElementById("username").value.trim(),
+          passInput.value
+        );
+        btnLabel.textContent = "Welcome back";
+        location.replace("admin-orders.html");
+      } catch (err) {
+        showError(err.message || "Sign in failed. Please try again.");
+        btn.disabled = false;
+        btnLabel.textContent = "Sign In";
+        const spin = document.getElementById("login-btn-arrow");
+        if (spin) spin.outerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="login-btn-arrow"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
+        passInput.select();
+      }
+    });
+  })();
+</script>
+</body>
+</html>

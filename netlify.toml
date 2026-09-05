@@ -1,9 +1,25 @@
 [build]
-  publish = "site"
+  # The real storefront lives at the repo root (index.html, css/, js/, pages/).
+  # Previously this pointed at "site/", which only contained a placeholder page.
+  publish = "."
   functions = "netlify/functions"
-  command = "npm run build"
+  # No build step needed — this is a static site. (The old "npm run build"
+  # command referenced a script that doesn't exist and failed every build.)
 
 [[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/:splat"
   status = 200
+
+# Don't serve backend/dev sources as static assets
+[[redirects]]
+  from = "/netlify/*"
+  to = "/404"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/tools/*"
+  to = "/404"
+  status = 404
+  force = true
