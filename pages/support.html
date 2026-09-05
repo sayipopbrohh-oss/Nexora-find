@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Support & Policies — Nexora.Find</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <a href="../index.html" class="logo">Nexora<span class="dot"></span>Find</a>
+    <nav class="nav-links">
+      <a href="../index.html">Home</a>
+      <a href="shop.html">Shop</a>
+    </nav>
+    <div class="nav-icons">
+      <a href="cart.html" class="icon-btn" aria-label="Cart">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3h2l2.4 12.4a2 2 0 0 0 2 1.6h8.4a2 2 0 0 0 2-1.6L22 8H6"/><circle cx="10" cy="21" r="1"/><circle cx="18" cy="21" r="1"/></svg>
+        <span class="cart-badge" data-cart-count style="display:none">0</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<section>
+  <div class="wrap" style="max-width:760px">
+    <span class="eyebrow">We're here to help</span>
+    <h2 style="font-size:clamp(26px,4vw,40px)">Support & Policies</h2>
+
+    <div class="info-accordion" style="margin-top:36px">
+      <div class="acc-item open" id="shipping">
+        <button class="acc-head">Shipping & Delivery <span class="plus">+</span></button>
+        <div class="acc-body" style="max-height:400px"><p>We dispatch every order within 24–48 hours of confirmation. Standard delivery takes 3–6 business days depending on your location; metro cities typically see 2–4 days. Free shipping applies on orders over ₹999 — a flat ₹79 fee applies below that. You'll get SMS and email tracking updates the moment your order ships.</p></div>
+      </div>
+      <div class="acc-item" id="returns">
+        <button class="acc-head">Returns & Refunds <span class="plus">+</span></button>
+        <div class="acc-body"><p>Changed your mind? You can request a return within 7 days of delivery, as long as the item is unused, undamaged, and in its original packaging. Once we receive and inspect the return, refunds are issued to your original payment method within 5–7 business days. Cash on Delivery refunds are processed via bank transfer or UPI.</p></div>
+      </div>
+      <div class="acc-item" id="privacy">
+        <button class="acc-head">Privacy Policy <span class="plus">+</span></button>
+        <div class="acc-body"><p>We collect only the information needed to process and deliver your order — name, address, phone, and payment details — and never sell your data to third parties. Information is stored securely and used solely for order fulfilment, customer support, and (if you opt in) product updates via our newsletter.</p></div>
+      </div>
+      <div class="acc-item" id="terms">
+        <button class="acc-head">Terms & Conditions <span class="plus">+</span></button>
+        <div class="acc-body"><p>By placing an order on Nexora.Find, you agree to provide accurate delivery and payment information. Prices are listed in Indian Rupees (₹) and may change without prior notice. Product images are representative; minor variations in colour or packaging may occur. Nexora.Find reserves the right to cancel orders in cases of suspected fraud or stock unavailability.</p></div>
+      </div>
+      <div class="acc-item" id="contact">
+        <button class="acc-head">Contact Us <span class="plus">+</span></button>
+        <div class="acc-body"><p>Email us at support@nexorafind.in or reach out on Instagram/X @nexorafind — our team typically replies within a few hours, every day of the week.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="../index.html" class="logo">Nexora<span class="dot"></span>Find</a>
+        <p>Trending, useful, and unique products — curated for young India and delivered to your door.</p>
+      </div>
+      <div class="footer-col"><h4>Shop</h4><a href="shop.html">All Products</a></div>
+      <div class="footer-col"><h4>Support</h4><a href="support.html">Customer Support</a></div>
+      <div class="footer-col"><h4>Company</h4><a href="about.html">About</a></div>
+    </div>
+    <div class="footer-bottom"><span>© 2026 Nexora.Find. All rights reserved.</span><span>Prices in ₹ INR</span></div>
+  </div>
+</footer>
+
+<script src="../js/data.js"></script>
+<script src="../js/cart.js"></script>
+<script src="../js/main.js"></script>
+<script>
+  // Open the accordion section matching the URL hash, if any
+  const hash = location.hash.replace("#", "");
+  if (hash) {
+    document.querySelectorAll(".acc-item").forEach(i => i.classList.remove("open"));
+    const target = document.getElementById(hash);
+    if (target) {
+      target.classList.add("open");
+      const body = target.querySelector(".acc-body");
+      body.style.maxHeight = body.scrollHeight + "px";
+      setTimeout(() => target.scrollIntoView({ behavior: "smooth", block: "start" }), 100);
+    }
+  }
+</script>
+</body>
+</html>

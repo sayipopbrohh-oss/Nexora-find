@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Order Confirmed — Nexora.Find</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <a href="../index.html" class="logo">Nexora<span class="dot"></span>Find</a>
+    <div></div>
+  </div>
+</header>
+
+<div class="confirm-wrap">
+  <div class="confirm-check">✓</div>
+  <h1>Order Confirmed!</h1>
+  <p>Thank you for shopping with Nexora.Find. A confirmation has been sent to your email — we'll notify you the moment it ships.</p>
+
+  <div class="order-box" id="order-box"></div>
+
+  <div style="margin-top:32px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+    <a href="../index.html" class="btn btn-outline">Back to Home</a>
+    <a href="shop.html" class="btn btn-primary">Continue Shopping</a>
+  </div>
+</div>
+
+<footer style="margin-top:60px">
+  <div class="wrap">
+    <div class="footer-bottom" style="border-top:none;margin-top:0">
+      <span>© 2026 Nexora.Find. All rights reserved.</span>
+      <span>Prices in ₹ INR</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../js/data.js"></script>
+<script src="../js/cart.js"></script>
+<script>
+  const raw = sessionStorage.getItem("nexora_last_order");
+  const order = raw ? JSON.parse(raw) : { orderId: "NXF000000", total: 0, items: 0 };
+  document.getElementById("order-box").innerHTML = `
+    <div class="row"><span>Order ID</span><strong>${order.orderId}</strong></div>
+    <div class="row"><span>Items</span><span>${order.items}</span></div>
+    <div class="row"><span>Amount Paid</span><strong>${formatINR(order.total)}</strong></div>
+    <div class="row"><span>Estimated Delivery</span><span>3–6 business days</span></div>
+  `;
+</script>
+</body>
+</html>

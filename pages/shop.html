@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shop — Nexora.Find</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <a href="../index.html" class="logo">Nexora<span class="dot"></span>Find</a>
+    <nav class="nav-links">
+      <a href="../index.html">Home</a>
+      <a href="shop.html" class="active">Shop</a>
+      <a href="shop.html?filter=Trending">Trending</a>
+      <a href="shop.html?filter=New">New Arrivals</a>
+      <a href="about.html">About</a>
+    </nav>
+    <div class="nav-icons">
+      <button class="icon-btn" aria-label="Search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></button>
+      <a href="cart.html" class="icon-btn" aria-label="Cart">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3h2l2.4 12.4a2 2 0 0 0 2 1.6h8.4a2 2 0 0 0 2-1.6L22 8H6"/><circle cx="10" cy="21" r="1"/><circle cx="18" cy="21" r="1"/></svg>
+        <span class="cart-badge" data-cart-count style="display:none">0</span>
+      </a>
+      <button class="icon-btn nav-burger" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap crumb"><a href="../index.html">Home</a><span>/</span>Shop</div>
+
+<section style="padding-top:32px">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">All Products</span>
+      <h2 id="page-title">Shop Nexora.Find</h2>
+    </div>
+    <div class="filter-row" id="filter-row"></div>
+    <div class="product-grid" id="shop-grid"></div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="../index.html" class="logo">Nexora<span class="dot"></span>Find</a>
+        <p>Trending, useful, and unique products — curated for young India and delivered to your door.</p>
+      </div>
+      <div class="footer-col"><h4>Shop</h4><a href="shop.html">All Products</a><a href="shop.html?filter=Trending">Trending</a></div>
+      <div class="footer-col"><h4>Support</h4><a href="support.html">Customer Support</a><a href="support.html#returns">Returns & Refunds</a></div>
+      <div class="footer-col"><h4>Company</h4><a href="about.html">About</a><a href="support.html#privacy">Privacy Policy</a></div>
+    </div>
+    <div class="footer-bottom"><span>© 2026 Nexora.Find. All rights reserved.</span><span>Prices in ₹ INR</span></div>
+  </div>
+</footer>
+
+<script src="../js/data.js"></script>
+<script src="../js/cart.js"></script>
+<script src="../js/main.js"></script>
+<script>
+  const params = new URLSearchParams(location.search);
+  let activeFilter = params.get("filter") || "All";
+
+  const allFilters = ["All", "Trending", "New", "Viral Find", "Bestseller", "Tech & Gadgets", "Lifestyle", "Home Essentials", "Accessories"];
+  document.getElementById("filter-row").innerHTML = allFilters.map(f =>
+    `<button class="chip ${f===activeFilter?'active':''}" data-f="${f}">${f}</button>`
+  ).join("");
+
+  function matches(p, f) {
+    if (f === "All") return true;
+    return p.badge === f || p.category === f;
+  }
+
+  function render(f) {
+    document.getElementById("page-title").textContent = f === "All" ? "Shop Nexora.Find" : f;
+    const list = PRODUCTS.filter(p => matches(p, f));
+    document.getElementById("shop-grid").innerHTML = (list.length ? list : PRODUCTS).map(p => {
+      const pct = discountPct(p.price, p.mrp);
+      return `
+      <div class="p-card">
+        <a href="product.html?id=${p.id}" class="p-media">
+          <span class="p-badge">${p.badge}</span>
+          ${pct ? `<span class="p-discount">${pct}% OFF</span>` : ""}
+          <img src="${p.img}" alt="${p.name}" loading="lazy">
+          <div class="p-quick"><span class="btn btn-light btn-sm btn-block">Quick View</span></div>
+        </a>
+        <div class="p-body">
+          <div class="p-cat">${p.category}</div>
+          <div class="p-name">${p.name}</div>
+          <div class="p-rating">${starString(p.rating)} <span class="n">(${p.reviews})</span></div>
+          <div class="p-price-row">
+            <span class="p-price">${formatINR(p.price)}</span>
+            ${pct ? `<span class="p-mrp">${formatINR(p.mrp)}</span>` : ""}
+          </div>
+          <button class="btn btn-primary btn-sm btn-block p-add" onclick="Cart.add('${p.id}',1,null); this.textContent='Added ✓'; setTimeout(()=>this.textContent='Add to Cart',1500)">Add to Cart</button>
+        </div>
+      </div>`;
+    }).join("");
+  }
+
+  document.getElementById("filter-row").addEventListener("click", (e) => {
+    const btn = e.target.closest(".chip");
+    if (!btn) return;
+    document.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
+    btn.classList.add("active");
+    render(btn.dataset.f);
+  });
+
+  render(activeFilter);
+</script>
+</body>
+</html>

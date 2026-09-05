@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Product — Nexora.Find</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <a href="../index.html" class="logo">Nexora<span class="dot"></span>Find</a>
+    <nav class="nav-links">
+      <a href="../index.html">Home</a>
+      <a href="shop.html">Shop</a>
+      <a href="shop.html?filter=Trending">Trending</a>
+      <a href="shop.html?filter=New">New Arrivals</a>
+      <a href="about.html">About</a>
+    </nav>
+    <div class="nav-icons">
+      <button class="icon-btn" aria-label="Search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></button>
+      <a href="cart.html" class="icon-btn" aria-label="Cart">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3h2l2.4 12.4a2 2 0 0 0 2 1.6h8.4a2 2 0 0 0 2-1.6L22 8H6"/><circle cx="10" cy="21" r="1"/><circle cx="18" cy="21" r="1"/></svg>
+        <span class="cart-badge" data-cart-count style="display:none">0</span>
+      </a>
+      <button class="icon-btn nav-burger" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap crumb"><a href="../index.html">Home</a><span>/</span><a href="shop.html">Shop</a><span>/</span><span id="crumb-name">Product</span></div>
+
+<section style="padding-top:12px">
+  <div class="wrap">
+    <div class="pd-grid" id="pd-root"><!-- injected --></div>
+
+    <div class="mt-lg">
+      <div class="section-head">
+        <span class="eyebrow">Complete The Look</span>
+        <h2>Related Products</h2>
+      </div>
+      <div class="product-grid" id="related-grid"></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="../index.html" class="logo">Nexora<span class="dot"></span>Find</a>
+        <p>Trending, useful, and unique products — curated for young India and delivered to your door.</p>
+      </div>
+      <div class="footer-col"><h4>Shop</h4><a href="shop.html">All Products</a><a href="shop.html?filter=Trending">Trending</a></div>
+      <div class="footer-col"><h4>Support</h4><a href="support.html">Customer Support</a><a href="support.html#returns">Returns & Refunds</a></div>
+      <div class="footer-col"><h4>Company</h4><a href="about.html">About</a><a href="support.html#privacy">Privacy Policy</a></div>
+    </div>
+    <div class="footer-bottom"><span>© 2026 Nexora.Find. All rights reserved.</span><span>Prices in ₹ INR</span></div>
+  </div>
+</footer>
+
+<script src="../js/data.js"></script>
+<script src="../js/cart.js"></script>
+<script src="../js/main.js"></script>
+<script>
+  const id = new URLSearchParams(location.search).get("id") || PRODUCTS[0].id;
+  const p = PRODUCTS.find(x => x.id === id) || PRODUCTS[0];
+  document.title = p.name + " — Nexora.Find";
+  document.getElementById("crumb-name").textContent = p.name;
+
+  const pct = discountPct(p.price, p.mrp);
+  const variantEntries = Object.entries(p.variants || {});
+  let selectedVariant = variantEntries.length ? variantEntries[0][1][0] : null;
+  let qty = 1;
+
+  document.getElementById("pd-root").innerHTML = `
+    <div>
+      <div class="pd-main-img"><img id="pd-main-img" src="${p.gallery[0]}" alt="${p.name}"></div>
+      <div class="pd-thumbs">
+        ${p.gallery.map((g,i) => `<div class="pd-thumb ${i===0?'active':''}" data-src="${g}"><img src="${g}" alt="thumb"></div>`).join("")}
+      </div>
+    </div>
+    <div>
+      <div class="pd-cat">${p.category}</div>
+      <h1 class="pd-title">${p.name}</h1>
+      <div class="pd-rating">${starString(p.rating)} <span class="n">${p.rating} · ${p.reviews} ratings</span></div>
+      <div class="pd-price-row">
+        <span class="pd-price">${formatINR(p.price)}</span>
+        ${pct ? `<span class="pd-mrp">${formatINR(p.mrp)}</span><span class="pd-disc">${pct}% OFF</span>` : ""}
+      </div>
+      <p class="pd-desc">${p.description}</p>
+      <ul class="pd-hl">${p.highlights.map(h => `<li>${h}</li>`).join("")}</ul>
+
+      ${variantEntries.map(([label, opts]) => `
+        <div class="pd-variant">
+          <h4>${label}: <span id="variant-label">${selectedVariant}</span></h4>
+          <div class="swatches">
+            ${opts.map(o => `<button class="swatch ${o===selectedVariant?'active':''}" data-v="${o}">${o}</button>`).join("")}
+          </div>
+        </div>`).join("")}
+
+      <div class="qty-row">
+        <div class="qty-control">
+          <button id="qty-minus">−</button>
+          <span class="val" id="qty-val">1</span>
+          <button id="qty-plus">+</button>
+        </div>
+        <span style="font-size:13px;color:var(--gray-500)">In stock — ready to ship</span>
+      </div>
+
+      <div class="pd-ctas">
+        <button class="btn btn-outline" id="add-to-cart-btn">Add to Cart</button>
+        <button class="btn btn-primary" id="buy-now-btn">Buy Now</button>
+      </div>
+
+      <div class="pincode-box">
+        <strong style="font-size:13.5px">Check delivery availability</strong>
+        <div class="pincode-row">
+          <input type="text" inputmode="numeric" maxlength="6" placeholder="Enter 6-digit pincode" id="pincode-input">
+          <button class="btn btn-primary btn-sm" id="pincode-check">Check</button>
+        </div>
+        <p class="pincode-result" id="pincode-result"></p>
+      </div>
+
+      <div class="info-accordion">
+        <div class="acc-item">
+          <button class="acc-head">Shipping Information <span class="plus">+</span></button>
+          <div class="acc-body"><p>Orders are dispatched within 24–48 hours and typically arrive in 3–6 business days across India. Free shipping on orders over ₹999; a flat ₹79 fee applies below that. You'll receive a tracking link by SMS and email as soon as your order ships.</p></div>
+        </div>
+        <div class="acc-item">
+          <button class="acc-head">Return & Refund Policy <span class="plus">+</span></button>
+          <div class="acc-body"><p>Not the right fit? Request a return within 7 days of delivery for a full refund or exchange, provided the item is unused and in its original packaging. Refunds are processed to your original payment method within 5–7 business days of pickup.</p></div>
+        </div>
+        <div class="acc-item">
+          <button class="acc-head">Frequently Asked Questions <span class="plus">+</span></button>
+          <div class="acc-body">
+            <p class="faq-q">Is Cash on Delivery available?</p>
+            <p>Yes, COD is available on most pincodes with a small handling fee.</p>
+            <p class="faq-q">Does it come with a warranty?</p>
+            <p>Yes, a 6-month manufacturer warranty against defects is included.</p>
+            <p class="faq-q">Can I change my delivery address after ordering?</p>
+            <p>Yes, within 2 hours of placing your order — contact support right away.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  // Thumbnail switching
+  document.querySelectorAll(".pd-thumb").forEach(t => t.addEventListener("click", () => {
+    document.querySelectorAll(".pd-thumb").forEach(x => x.classList.remove("active"));
+    t.classList.add("active");
+    document.getElementById("pd-main-img").src = t.dataset.src;
+  }));
+
+  // Variant switching
+  document.querySelectorAll(".swatch").forEach(s => s.addEventListener("click", () => {
+    document.querySelectorAll(".swatch").forEach(x => x.classList.remove("active"));
+    s.classList.add("active");
+    selectedVariant = s.dataset.v;
+    document.getElementById("variant-label").textContent = selectedVariant;
+  }));
+
+  // Quantity
+  document.getElementById("qty-minus").addEventListener("click", () => { qty = Math.max(1, qty - 1); document.getElementById("qty-val").textContent = qty; });
+  document.getElementById("qty-plus").addEventListener("click", () => { qty = Math.min(10, qty + 1); document.getElementById("qty-val").textContent = qty; });
+
+  // Add to cart / Buy now
+  document.getElementById("add-to-cart-btn").addEventListener("click", function () {
+    Cart.add(p.id, qty, selectedVariant);
+    this.textContent = "Added ✓";
+    setTimeout(() => (this.textContent = "Add to Cart"), 1500);
+  });
+  document.getElementById("buy-now-btn").addEventListener("click", () => {
+    Cart.add(p.id, qty, selectedVariant);
+    location.href = "checkout.html";
+  });
+
+  // Pincode check (front-end simulation)
+  document.getElementById("pincode-check").addEventListener("click", () => {
+    const val = document.getElementById("pincode-input").value.trim();
+    const result = document.getElementById("pincode-result");
+    if (/^\d{6}$/.test(val)) {
+      result.style.display = "block";
+      result.textContent = `✓ Delivery available to ${val} — arrives in 3–5 business days.`;
+    } else {
+      result.style.display = "block";
+      result.style.color = "var(--danger)";
+      result.textContent = "Please enter a valid 6-digit pincode.";
+    }
+  });
+
+  // Related products
+  const related = PRODUCTS.filter(x => x.id !== p.id && x.category === p.category).slice(0, 4);
+  const fallback = PRODUCTS.filter(x => x.id !== p.id).slice(0, 4);
+  const relList = (related.length ? related : fallback);
+  document.getElementById("related-grid").innerHTML = relList.map(rp => {
+    const rpct = discountPct(rp.price, rp.mrp);
+    return `
+    <div class="p-card">
+      <a href="product.html?id=${rp.id}" class="p-media">
+        <span class="p-badge">${rp.badge}</span>
+        ${rpct ? `<span class="p-discount">${rpct}% OFF</span>` : ""}
+        <img src="${rp.img}" alt="${rp.name}" loading="lazy">
+      </a>
+      <div class="p-body">
+        <div class="p-cat">${rp.category}</div>
+        <div class="p-name">${rp.name}</div>
+        <div class="p-rating">${starString(rp.rating)} <span class="n">(${rp.reviews})</span></div>
+        <div class="p-price-row"><span class="p-price">${formatINR(rp.price)}</span>${rpct ? `<span class="p-mrp">${formatINR(rp.mrp)}</span>` : ""}</div>
+        <button class="btn btn-primary btn-sm btn-block p-add" onclick="Cart.add('${rp.id}',1,null); this.textContent='Added ✓'; setTimeout(()=>this.textContent='Add to Cart',1500)">Add to Cart</button>
+      </div>
+    </div>`;
+  }).join("");
+</script>
+</body>
+</html>
