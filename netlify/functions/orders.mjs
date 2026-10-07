@@ -30,7 +30,7 @@ export async function handler(event) {
         ok: false,
         error: unconfigured
           ? "Order service is not configured yet. Please try again later."
-          : "Something went wrong while saving your order. Please try again."
+          : "err.message"
       }
     );
   }
